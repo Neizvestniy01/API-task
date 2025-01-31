@@ -29,11 +29,16 @@ def update_user(user_id):
             return jsonify(user)
     return jsonify({"error": "User not found"}), 404
 
+
 @app.route("/api/DeleteUsers/<int:user_id>", methods=["DELETE"])
 def delete_user(user_id):
     global users
-    users = [u for u in users if u["id"] != user_id]
-    return jsonify({"message": "User deleted"}), 200
+    user_to_delete = next((u for u in users if u["id"] == user_id), None)
+    if user_to_delete:
+        users = [u for u in users if u["id"] != user_id]
+        return jsonify({"message": "User deleted"}), 200
+    else:
+        return jsonify({"error": "User not found"}), 404
 
 if __name__ == "__main__":
     app.run(debug=True)
